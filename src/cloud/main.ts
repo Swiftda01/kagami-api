@@ -98,7 +98,7 @@ Parse.Cloud.define("checkTransactionLimitBreach", async (request: any) => {
       const tx = transactions[index];
 
       // Only check policy for breaches if confirmed transaction amounts are
-      // sent by addresses within cluster
+      // sent by addresses within cluster to addresses outside of the cluster
       if (
         !cluster.attributes.addresses.some((address: string) => {
           return tx.fromAddress.toLowerCase() === address.toLowerCase();
@@ -110,7 +110,7 @@ Parse.Cloud.define("checkTransactionLimitBreach", async (request: any) => {
         continue;
       }
 
-      // Find who sent currency value from lowest denomination
+      // Find sent currency value from lowest denomination
       const valueWhole = tx.value / 1000000000000000000;
 
       // Find breach amount
