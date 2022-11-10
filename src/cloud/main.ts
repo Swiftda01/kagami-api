@@ -100,11 +100,12 @@ Parse.Cloud.define("checkTransactionLimitBreach", async (request: any) => {
       // Only check policy for breaches if confirmed transaction amounts are
       // sent by addresses within cluster
       if (
-        !cluster.attributes.addresses
-          .map((address: string) => {
-            return address.toLowerCase();
-          })
-          .includes(tx.fromAddress.toLowerCase())
+        !cluster.attributes.addresses.some((address: string) => {
+          return tx.fromAddress.toLowerCase() === address.toLowerCase();
+        }) ||
+        cluster.attributes.addresses.some((address: string) => {
+          return tx.toAddress.toLowerCase() === address.toLowerCase();
+        })
       ) {
         continue;
       }
