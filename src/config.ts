@@ -7,7 +7,6 @@ export default cleanEnv(process.env, {
   MORALIS_API_KEY: str({
     desc: 'Your moralis Api key (keep this secret)',
   }),
-
   PORT: num({
     desc: 'Default port wher parse-server will run on',
     default: 1337,
@@ -47,5 +46,14 @@ export default cleanEnv(process.env, {
   RATE_LIMIT_ANONYMOUS: num({
     desc: 'Rate limit requests per window for anonymous users',
     default: 20,
+  }),
+  TOKEN_CONTRACT: str({
+    desc: 'Token contract address',
+  }),
+  TREASURY_WALLET_PRIVATE_KEY: str({
+    desc: 'The private key of the treasury wallet',
+  }),
+  WEB3_HTTP_PROVIDER: str({
+    desc: 'Web3 provider URL',
   }),
 });
