@@ -554,6 +554,89 @@ Parse.Cloud.define("updateStreamAddresses", async (request: any) => {
   });
 });
 
+// TODO: Fix this and schedule to run on a daily basis, not working since
+// move to self-hosted server
+Parse.Cloud.define("checkDailyLimitBreach", async (request: any) => {
+  const breaches = [];
+
+  const chain = chains[0];
+
+  const Cluster = Parse.Object.extend("Cluster");
+  const clusters = await new Parse.Query(Cluster).find({
+    useMasterKey: true,
+  });
+
+  const Policy = Parse.Object.extend("Policy");
+  const policiesQuery = await new Parse.Query(Policy);
+  policiesQuery.equalTo("type", "Daily Limit");
+
+  const policies = await policiesQuery.find({ useMasterKey: true });
+
+  const Breach = Parse.Object.extend("Breach");
+
+  for (let index = 0; index < policies.length; index++) {
+    const policy = policies[index];
+
+    const cluster = clusters.find((searchedCluster: any) => {
+      return policy.attributes.cluster.id === searchedCluster.id;
+    });
+
+    const date = new Date();
+
+    const toDate = date.toISOString();
+    date.setDate(date.getDate() - 1);
+    const fromDate = date.toISOString();
+
+    const txQueries = cluster.attributes.addresses.map(async (address: string) => {
+      const options = { chain, address, to_date: toDate, from_date: fromDate };
+
+      return await Parse.Web3API.account.getTransactions(options);
+    });
+
+    const txs = (await Promise.all(txQueries))
+      .map((txQuery) => {
+        return txQuery.result.filter((tx: any) => {
+          return !cluster.attributes.addresses.some((address: string) => {
+            return tx.to_address.toLowerCase() === address.toLowerCase();
+          });
+        });
+      })
+      .flat();
+
+    if (txs.length > 0) {
+      const sentAmount = txs.reduce((accumulator, tx) => {
+        return accumulator + parseInt(tx.value);
+      }, 0);
+
+      const valueWhole = sentAmount / 1000000000000000000;
+      const breachAmount = parseFloat(
+        (valueWhole - policy.attributes.rules.max).toPrecision(12)
+      );
+
+      if (breachAmount > 0) {
+        const breach = new Breach();
+
+        breach.setACL(new Parse.ACL(policy.attributes.ACL.permissionsById));
+
+        breach.set("policy", policy);
+        breach.set("notified", policy.attributes.recipients);
+        breach.set("rules", policy.attributes.rules);
+        breach.set("violation", { exceededBy: breachAmount });
+
+        breach.save();
+
+        breaches.push({
+          policyId: policy.id,
+          sentAmount: valueWhole,
+          breachAmount,
+        });
+      }
+    }
+  }
+
+  return breaches;
+});
+
 Parse.Cloud.define("checkTransactionLimitBreach", async (request: any) => {
   const breaches: object[] = [];
   const confirmed = request.params.confirmed;
