@@ -547,7 +547,9 @@ Parse.Cloud.define("updateStreamAddresses", async (request: any) => {
   const addressesToAdd = to.filter((address: string) => !from.includes(address));
   const addressesToRemove = from.filter((address: string) => !to.includes(address));
 
-  Moralis.Streams.addAddress({ address: addressesToAdd, id });
+  if (addressesToAdd.length > 0) {
+    await Moralis.Streams.addAddress({ address: addressesToAdd, id });
+  }
 
   addressesToRemove.forEach((address: string) => {
     Moralis.Streams.deleteAddress({ address, id });
