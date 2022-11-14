@@ -17,6 +17,7 @@
     "graphql-ws": "^5.10.1",
     "moralis": "^2.7.0",
     "parse-server": "^5.2.7",
+    "pm2": "^5.2.2",
     "web3": "^1.8.1"
   },
   "devDependencies": {
@@ -35,7 +36,7 @@
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "start": "node build/index.js",
+    "start": "npx pm2 start build/index.js",
     "build": "tsc",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --write 'src/**/*.{js,ts}'",
