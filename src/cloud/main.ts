@@ -620,6 +620,8 @@ Parse.Cloud.define("checkDailyLimitBreach", async (request: any) => {
 
         breach.setACL(new Parse.ACL(policy.attributes.ACL.permissionsById));
 
+        breach.set("clusterName", cluster.attributes.name)
+        breach.set("policyType", policy.attributes.type)
         breach.set("policy", policy);
         breach.set("notified", policy.attributes.recipients);
         breach.set("rules", policy.attributes.rules);
@@ -702,6 +704,8 @@ Parse.Cloud.define("checkTransactionLimitBreach", async (request: any) => {
 
         breach.setACL(new Parse.ACL(policy.attributes.ACL.permissionsById));
 
+        breach.set("clusterName", cluster.attributes.name)
+        breach.set("policyType", policy.attributes.type)
         breach.set("policy", policy);
         breach.set("notified", policy.attributes.recipients);
         breach.set("rules", policy.attributes.rules);
