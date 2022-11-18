@@ -20,7 +20,7 @@
 
 //   if (error instanceof Error) {
 //     return error.message;
-//   } 
+//   }
 
 //   return `API error while calling ${name}`
 // }
@@ -92,4 +92,3 @@
 //     throw new Error(getErrorMessage(error, 'sol-getTokenPrice'));
 //   }
 // })
-
