@@ -645,7 +645,7 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
   const transactions = request.params.txs;
 
   // Only check for breaches if there are confirmed transactions
-  if (!confirmed || transactions.length === 0) return breaches;
+  if (confirmed || transactions.length === 0) return breaches;
 
   // Get all clusters
   const Cluster = Parse.Object.extend('Cluster');
