@@ -36,7 +36,7 @@
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "start": "node build/index.js",
+    "start": "npx pm2-runtime start ecosystem.config.js --env production",
     "build": "tsc",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --write 'src/**/*.{js,ts}'",
