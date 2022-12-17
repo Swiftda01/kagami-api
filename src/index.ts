@@ -16,6 +16,19 @@ Moralis.start({
   apiKey: config.MORALIS_API_KEY,
 });
 
+const Twit = require('twit');
+
+const T = new Twit({
+  consumer_key: config.TWITTER_CONSUMER_KEY,
+  consumer_secret: config.TWITTER_CONSUMER_SECRET,
+  access_token: config.TWITTER_ACCESS_TOKEN,
+  access_token_secret: config.TWITTER_ACCESS_TOKEN_SECRET,
+});
+
+T.post('statuses/update', { status: 'hello world!' }, function(err: any, data: any, response: any) {
+  console.log(data)
+})
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

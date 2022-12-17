@@ -56,4 +56,16 @@ export default cleanEnv(process.env, {
   WEB3_HTTP_PROVIDER: str({
     desc: 'Web3 provider URL',
   }),
+  TWITTER_CONSUMER_KEY: str({
+    desc: 'Twitter API key'
+  }),
+  TWITTER_CONSUMER_SECRET: str({
+    desc: 'Twitter API secret'
+  }),
+  TWITTER_ACCESS_TOKEN: str({
+    desc: 'Twitter access token'
+  }),
+  TWITTER_ACCESS_TOKEN_SECRET: str({
+    desc: 'Twitter access token secret'
+  })
 });
