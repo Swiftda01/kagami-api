@@ -10,6 +10,8 @@ import { streamsSync } from '@moralisweb3/parse-server';
 
 export const app = express();
 
+declare const Parse: any;
+
 Moralis.start({
   apiKey: config.MORALIS_API_KEY,
 });
@@ -27,6 +29,30 @@ app.use(
 );
 
 app.use(`/server`, parseServer.app);
+
+app.get('/policies', async (req, res, next) => {
+  const Policy = Parse.Object.extend('Policy');
+
+  const policiesQuery = await new Parse.Query(Policy);
+  const policies = await policiesQuery.find({ useMasterKey: true });
+
+  const Cluster = Parse.Object.extend('Cluster');
+  const clusters = await new Parse.Query(Cluster).find({ useMasterKey: true });
+
+  res.json(
+    policies.map((policy: any) => {
+      const cluster = clusters.find((searchedCluster: any) => {
+        return policy.attributes.cluster.id === searchedCluster.id;
+      });
+
+      return {
+        type: policy.attributes.type,
+        rules: policy.attributes.rules,
+        clusterName: cluster.attributes.name,
+      };
+    }),
+  );
+});
 
 const httpServer = http.createServer(app);
 httpServer.listen(config.PORT, () => {
