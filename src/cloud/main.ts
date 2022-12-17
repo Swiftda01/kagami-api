@@ -642,6 +642,7 @@ Parse.Cloud.define('checkDailyLimitBreach', async (request: any) => {
 Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
   const breaches: object[] = [];
   const confirmed = request.params.confirmed;
+  const streamId = request.params.streamId;
   const transactions = request.params.txs;
 
   // Only check for breaches if there are confirmed transactions
@@ -657,7 +658,7 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
   const Policy = Parse.Object.extend('Policy');
 
   const policiesQuery = await new Parse.Query(Policy);
-  policiesQuery.equalTo('type', 'Transaction Limit');
+  policiesQuery.equalTo('streamId', streamId);
 
   const policies = await policiesQuery.find({ useMasterKey: true });
 
