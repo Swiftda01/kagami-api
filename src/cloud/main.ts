@@ -701,11 +701,15 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
         breach.setACL(new Parse.ACL(policy.attributes.ACL.permissionsById));
 
         breach.set('clusterName', cluster.attributes.name);
+        breach.set('clusterAddresses', cluster.attributes.addresses);
         breach.set('policyType', policy.attributes.type);
         breach.set('policy', policy);
         breach.set('notified', policy.attributes.recipients);
         breach.set('rules', policy.attributes.rules);
-        breach.set('violation', { exceededBy: breachAmount });
+        breach.set('violation', {
+          exceededBy: breachAmount,
+          offendingAddress: tx.fromAddress
+        });
 
         breach.save();
 
