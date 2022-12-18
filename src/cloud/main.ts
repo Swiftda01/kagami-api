@@ -734,7 +734,7 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
             `${breach.attributes.violation.offendingAddress} has transfered ` +
             `${breach.attributes.violation.exceededBy} over the threshold of ` +
             `${breach.attributes.rules.max} MATIC to address ${tx.toAddress}! ` +
-            `View here: https://mumbai.polygonscan.com/tx/${tx.hash}`
+            `https://mumbai.polygonscan.com/tx/${tx.hash}`
         }, function(err: any, data: any, response: any) {
           console.log(data)
         });
