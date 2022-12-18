@@ -12,6 +12,15 @@ import config from '../config';
 
 const chains = [EvmChain.MUMBAI];
 
+const Twit = require('twit');
+
+const T = new Twit({
+  consumer_key: config.TWITTER_CONSUMER_KEY,
+  consumer_secret: config.TWITTER_CONSUMER_SECRET,
+  access_token: config.TWITTER_ACCESS_TOKEN,
+  access_token_secret: config.TWITTER_ACCESS_TOKEN_SECRET,
+});
+
 Parse.Cloud.define('requestMessage', async ({ params }: any) => {
   const { address, chain, networkType } = params;
 
@@ -718,6 +727,16 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
           policyId: policy.id,
           sentAmount: valueWhole,
           breachAmount,
+        });
+
+        T.post('statuses/update', {
+          status: `${breach.attributes.policyType} breach by ${breach.attributes.clusterName}: ` +
+            `${breach.attributes.violation.offendingAddress} has transfered ` +
+            `${breach.attributes.violation.exceededBy} over the threshold of ` +
+            `${breach.attributes.rules.max} MATIC to address ${tx.toAddress}! ` +
+            `View here: https://mumbai.polygonscan.com/tx/${tx.hash}`
+        }, function(err: any, data: any, response: any) {
+          console.log(data)
         });
       }
     }
