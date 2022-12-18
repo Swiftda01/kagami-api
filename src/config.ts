@@ -57,15 +57,15 @@ export default cleanEnv(process.env, {
     desc: 'Web3 provider URL',
   }),
   TWITTER_CONSUMER_KEY: str({
-    desc: 'Twitter API key'
+    desc: 'Twitter API key',
   }),
   TWITTER_CONSUMER_SECRET: str({
-    desc: 'Twitter API secret'
+    desc: 'Twitter API secret',
   }),
   TWITTER_ACCESS_TOKEN: str({
-    desc: 'Twitter access token'
+    desc: 'Twitter access token',
   }),
   TWITTER_ACCESS_TOKEN_SECRET: str({
-    desc: 'Twitter access token secret'
-  })
+    desc: 'Twitter access token secret',
+  }),
 });

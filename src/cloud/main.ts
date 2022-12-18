@@ -718,7 +718,7 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
         breach.set('rules', policy.attributes.rules);
         breach.set('violation', {
           exceededBy: breachAmount,
-          offendingAddress: tx.fromAddress
+          offendingAddress: tx.fromAddress,
         });
 
         breach.save();
@@ -729,15 +729,20 @@ Parse.Cloud.define('checkTransactionLimitBreach', async (request: any) => {
           breachAmount,
         });
 
-        T.post('statuses/update', {
-          status: `${breach.attributes.policyType} breach by ${breach.attributes.clusterName}: ` +
-            `${breach.attributes.violation.offendingAddress} has transfered ` +
-            `${breach.attributes.violation.exceededBy} over the threshold of ` +
-            `${breach.attributes.rules.max} MATIC to address ${tx.toAddress}! ` +
-            `https://mumbai.polygonscan.com/tx/${tx.hash}`
-        }, function(err: any, data: any, response: any) {
-          console.log(data)
-        });
+        T.post(
+          'statuses/update',
+          {
+            status:
+              `${breach.attributes.policyType} breach by ${breach.attributes.clusterName}: ` +
+              `${breach.attributes.violation.offendingAddress} has transfered ` +
+              `${breach.attributes.violation.exceededBy} over the threshold of ` +
+              `${breach.attributes.rules.max} MATIC to address ${tx.toAddress}! ` +
+              `https://mumbai.polygonscan.com/tx/${tx.hash}`,
+          },
+          function (err: any, data: any, response: any) {
+            console.log(data);
+          },
+        );
       }
     }
   }
